@@ -1,17 +1,11 @@
 name: Trigger auto deployment for shopwebapi
 
 # When this action will be executed
-on:
-  # Automatically trigger it when detected changes in repo
-  push:
-    branches: 
-      [ main ]
-    paths:
-    - '**'
-    - '.github/workflows/shopwebapi-AutoDeployTrigger-fe0d88f4-a31e-424e-8f74-a84cdb51f3ef.yml'
+on: [push]
 
-  # Allow mannually trigger 
-  workflow_dispatch:
+permissions:
+      id-token: write
+      contents: read
       
 jobs:
   build-and-deploy:
