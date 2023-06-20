@@ -1,0 +1,42 @@
+name: Trigger auto deployment for shopwebapi
+
+# When this action will be executed
+on:
+  # Automatically trigger it when detected changes in repo
+  push:
+    branches: 
+      [ main ]
+    paths:
+    - '**'
+    - '.github/workflows/shopwebapi-AutoDeployTrigger-fe0d88f4-a31e-424e-8f74-a84cdb51f3ef.yml'
+
+  # Allow mannually trigger 
+  workflow_dispatch:
+      
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout to the branch
+        uses: actions/checkout@v2
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.SHOPWEBAPI_AZURE_CREDENTIALS }}
+
+      - name: Build and push container image to registry
+        uses: azure/container-apps-deploy-action@v1
+        with:
+          appSourcePath: ${{ github.workspace }} 
+          registryUrl: shoppingappacreg.azurecr.io
+          registryUsername: ${{ secrets.SHOPWEBAPI_REGISTRY_USERNAME }}
+          registryPassword: ${{ secrets.SHOPWEBAPI_REGISTRY_PASSWORD }}
+          containerAppName: shopwebapi
+          resourceGroup: jdev-rg
+          imageToBuild: shoppingappacreg.azurecr.io/shopwebapi:${{ github.sha }}
+          
+
+     
+
